@@ -26,7 +26,7 @@ module.exports = {
                 collapsable: true,
                 children: [
                     'markdown',
-                    'Spring-Batch'
+                    'SpringBatch'
                 ]
             }]
         }
