@@ -62,7 +62,7 @@ Spring Batch를 소개하기전에 배치 어플리케이션이란 어떤 것인
  
  이를 실시간 집계 쿼리로 해결하기엔 조회 시간이나 서버 부하가 심합니다. 
  그래서 매일 새벽에 전날의 매출 집계 데이터를 만들어서 외부 요청이 올 경우 미리 만들어준 집계 데이터를 바로 전달하면 성능과 부하를 모두 잡을 수 있습니다.
- ![batch sample](./images/batch.png)
+ ![batch sample](../images/swchoi/batch.png)
  
  ## Spring Batch 프로젝트 생성하기
  기본적인 프로젝트 개발 환경은 다음과 같습니다.
@@ -72,3 +72,68 @@ Spring Batch를 소개하기전에 배치 어플리케이션이란 어떤 것인
   - Maven 
   
   ```이를 기반하여 프로젝트 생성을 시작하겠습니다.```
+
+ 먼저 Spring Boot 프로젝트를 나타내는 Spring Initializr (Spring Boot)를 선택합니다.
+ 
+ ![batch project](../images/swchoi/springBatch1.png)
+ 
+ 본인만의 Group, Artfact를 선택하시고 Maven 프로젝트를 선택합니다.
+ 
+ ![batch project](../images/swchoi/springBatch2.png)
+  
+ 이후 Spring 의존성을 선택하는 화면에선 아래와 같이 선택합니다.
+ 
+ ![batch project](../images/swchoi/springBatch3.png)
+   
+  ### Simple Job 생성하기
+  Batch Job을 만들기 전에, ```BatchdemoApplication.java```에 다음과 같이 **Spring Batch 기능 활성화** 어노테이션 ```@EnableBatchProcessing```을 추가합니다.
+ 
+ ![batch Simple Job](../images/swchoi/springBatch5.png)
+ 
+ 이 어노테이션을 선언하면, Spring Batch의 여러 기능들을 사용할 수 있게 됩니다. 
+ 선언하지 않으시면 Spring Batch 기능을 사용할 수 없기 때문에 **필수로 선언**하셔야만 합니다.
+ 
+ 설정이 끝나셨으면 패키지 아래에 job 패키지를 생성하고, ```SimpleJobConfiguration.java``` 파일을 생섭합니다.
+ 
+ ![batch Simple Job](../images/swchoi/springBatch7.png)
+ 
+ - ```@Conifguration```
+    - Spring Batch의 모든 Job은 ```@Conifguration```으로 등록해서 사용합니다.
+ - ```jobBuilderFactory.get("simpleJob)```
+    - ```simpleJob```이란 이름의 Batch Job을 생성합니다.
+    - job의 이름은 별도로 지정하지 않고, 이렇게 Builder를 통해 지정합니다.
+ - ```stepBuilderFactory.get("simpleStep1")```
+    - ```simpleStep1``` 이란 이름의 Batch Step을 생성합니다.
+    - ```jobBuilderFactory.get("simpleJob")```와 마찬가지로 Builder를 통해 이름을 지정합니다.
+ - ```.tasklet((contribution, chunkContext))```
+    - Step 안에서 수행될 기능들을 명시합니다.
+    - 여기서는 Batch가 수행되면 ```log.info(">>>>> This is Step1")``` 가 출력되도록 합니다.
+  
+  Batch Job을 생성하는 **simpleJob 코드를 보시면 simpleStep1을 품고 있음**을 알 수 있습니다. 
+  Spring Batch에서 **Job은 하나의 배치 작업 단위**를 얘기하는데요. 
+  Job 안에는 아래처럼 여러 Step이 존재하고, Step 안에 Tasklet 혹은 Reader & Processor & Writer 묶음이 존재합니다.
+   
+  ![batch Simple Job](../images/swchoi/springBatch6.png)
+  
+  Job안에 여러 Step이 있다는건 쉽게 이해되지만, Step이 품고 있는 단위가 애매하게 보이실 수 있습니다.
+  
+  **Tasklet 하나와 Reader & Processor & Writer 한 묶음이 같은 레벨**입니다. 
+  그래서 **Reader & Processor가 끝나고 Tasklet으로 마무리 짓는 등으로 만들순 없다**는걸 꼭 명심해주셔야 합니다.
+  
+  ```
+  Tasklet은 어찌보면 Spring MVC의 @Component, @Bean과 비슷한 역할이라고 보셔도 될 것 같습니다. 
+  명확한 역할은 없지만, 개발자가 지정한 커스텀한 기능을 위한 단위로 보시면 됩니다.
+  ```
+  
+  자 그럼 한번 이 간단한 Spring Batch 어플리케이션을 실행해보겠습니다. 
+  처음 만들어졌던 ```BatchdemoApplication.java```의 ```main``` 메소드를 실행하면 Batch가 실행됩니다.
+  
+ ![batch Simple Job](../images/swchoi/springBatch8.png)
+ 
+ 실행해보시면 아래처럼 ```log.info(">>>>> This is Step1")```가 잘 수행되어 로그가 찍힌것을 알 수 있습니다.
+ 
+ ![batch Simple Job](../images/swchoi/springBatch4.png)
+ 
+ 처음으로 Spring Batch 프로그램을 작성해보았습니다! 
+ 
+ ## 메타테이블 생성        
