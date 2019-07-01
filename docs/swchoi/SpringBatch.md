@@ -137,3 +137,32 @@ Spring Batch를 소개하기전에 배치 어플리케이션이란 어떤 것인
  처음으로 Spring Batch 프로그램을 작성해보았습니다! 
  
  ## 메타테이블 생성        
+ 스프링 배치에선 메타 데이터 테이블들이 필요합니다.
+ 
+ Spring Batch의 메타 데이터는 다음과 같은 내용들을 담고 있습니다.
+  
+  - 이전에 실행한 Job이 어떤 것들이 있는지
+  - 최근 실패한 Batch Parameter가 어떤것들이 있고, 성공한 Job은 어떤것들이 있는지
+  - 다시 실행한다면 어디서 부터 시작하면 될지
+  - 어떤 Job에 어떤 Step들이 있었고, Step들 중 성공한 Step과 실패한 Step들은 어떤것들이 있는지
+
+등등 Batch 어플리케이션을 운영하기 위한 메타데이터가 여러 테이블에 나눠져 있습니다.  
+ 메타 테이블 구조는 아래와 같습니다.
+ 
+ ![batch meta table](../images/swchoi/springBatch9.png)
+ 
+ 이 테이블들이 있어야만 Spring Batch가 정상 작동합니다.
+ 기본적으로 H2 DB를 사용할 경우엔 해당 테이블을 Boot가 실행될때 자동으로 생성해주지만, ```MySQL이나 Oracle과 같은 DB를 사용할때는 개발자가 직접 생성```해야만 합니다.
+  
+ Spring Batch에 해당 스키마가 존재하고 이를 그대로 복사해서 create table 하시면 됩니다.
+ 
+ IDE에서 파일 검색으로 schema 를 검새하면 메타 테이블들의 스키마가 DBMS에 맞춰 각각 존재하는 것을 볼 수 있습니다.
+ 
+ ![batch meta table](../images/swchoi/springBatch10.png)
+ 
+ 각자의 DBMS 환경에 맞춰 schema-OOO.sql를 실행해주시면 됩니다. 
+ 
+ ![batch meta table](../images/swchoi/springBatch11.png)
+  
+  
+ 
