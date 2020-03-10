@@ -1,11 +1,11 @@
 
 module.exports = {
     home : true,
-    title : 'Hello VuePress',
+    title : "SeungWon's DevStory",
     description : 'Just playing around',
-    base : '/vuepress_setting/',
+    base : '/about-me/',
     themeConfig: {
-        repo: 'ChoiSeungWon/vuepress_setting',
+        repo: 'ChoiSeungWon/about-me',
         editLinks: true,
         docsDir: 'docs',
         lastUpdated: 'Last Updated',
