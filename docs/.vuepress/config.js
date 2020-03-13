@@ -3,7 +3,7 @@ module.exports = {
     home : true,
     title : "SeungWon 기술블로그",
     description : 'Just playing around',
-    base : '/',
+    base : '/about-me/',
     themeConfig: {
         repo: 'ChoiSeungWon/about-me',
         editLinks: true,
