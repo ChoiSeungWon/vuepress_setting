@@ -13,4 +13,4 @@
   - https://github.com/ChoiSeungWon
 
   ### Blog
-  - https://choiseungwon.github.io
+  - https://choiseungwon.github.io/about-me/
