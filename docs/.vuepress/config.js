@@ -1,7 +1,7 @@
 
 module.exports = {
     home : true,
-    title : "SeungWon's DevStory",
+    title : "SeungWon 기술블로그",
     description : 'Just playing around',
     base : '/about-me/',
     themeConfig: {
@@ -11,22 +11,28 @@ module.exports = {
         lastUpdated: 'Last Updated',
         search: true,
         sidebarDepth: 3,
-        nav: [{
-            text: 'Home',
-            link: '/'
-        },
+        nav: [
             {
-                text: '최승원',
+                text: 'Home',
+                link: '/'
+            },
+            {
+                text: 'Tech',
+                link: '/tech/'
+            },
+            {
+                text: 'about',
                 link: '/swchoi/'
-            }
+            },
         ],
         sidebar: {
-            '/swchoi/': [{
-                title: 'DOCUMENT',
+            '/tech/': [{
+                title: 'Tech',
                 collapsable: true,
                 children: [
-                    'markdown',
-                    'SpringBatch'
+                    '/tech/vuepress/',
+                    '/tech/markdown/',
+                    '/tech/springbatch/SpringBatch'
                 ]
             }]
         }

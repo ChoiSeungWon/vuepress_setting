@@ -62,7 +62,7 @@ Spring Batch를 소개하기전에 배치 어플리케이션이란 어떤 것인
  
  이를 실시간 집계 쿼리로 해결하기엔 조회 시간이나 서버 부하가 심합니다. 
  그래서 매일 새벽에 전날의 매출 집계 데이터를 만들어서 외부 요청이 올 경우 미리 만들어준 집계 데이터를 바로 전달하면 성능과 부하를 모두 잡을 수 있습니다.
- ![batch sample](../images/swchoi/batch.png)
+ ![batch sample](../../images/swchoi/batch.png)
  
  ## Spring Batch 프로젝트 생성하기
  기본적인 프로젝트 개발 환경은 다음과 같습니다.
@@ -75,27 +75,27 @@ Spring Batch를 소개하기전에 배치 어플리케이션이란 어떤 것인
 
  먼저 Spring Boot 프로젝트를 나타내는 Spring Initializr (Spring Boot)를 선택합니다.
  
- ![batch project](../images/swchoi/springBatch1.png)
+ ![batch project](../../images/swchoi/springBatch1.png)
  
  본인만의 Group, Artfact를 선택하시고 Maven 프로젝트를 선택합니다.
  
- ![batch project](../images/swchoi/springBatch2.png)
+ ![batch project](../../images/swchoi/springBatch2.png)
   
  이후 Spring 의존성을 선택하는 화면에선 아래와 같이 선택합니다.
  
- ![batch project](../images/swchoi/springBatch3.png)
+ ![batch project](../../images/swchoi/springBatch3.png)
    
   ### Simple Job 생성하기
   Batch Job을 만들기 전에, ```BatchdemoApplication.java```에 다음과 같이 **Spring Batch 기능 활성화** 어노테이션 ```@EnableBatchProcessing```을 추가합니다.
  
- ![batch Simple Job](../images/swchoi/springBatch5.png)
+ ![batch Simple Job](../../images/swchoi/springBatch5.png)
  
  이 어노테이션을 선언하면, Spring Batch의 여러 기능들을 사용할 수 있게 됩니다. 
  선언하지 않으시면 Spring Batch 기능을 사용할 수 없기 때문에 **필수로 선언**하셔야만 합니다.
  
  설정이 끝나셨으면 패키지 아래에 job 패키지를 생성하고, ```SimpleJobConfiguration.java``` 파일을 생섭합니다.
  
- ![batch Simple Job](../images/swchoi/springBatch7.png)
+ ![batch Simple Job](../../images/swchoi/springBatch7.png)
  
  - ```@Conifguration```
     - Spring Batch의 모든 Job은 ```@Conifguration```으로 등록해서 사용합니다.
@@ -113,7 +113,7 @@ Spring Batch를 소개하기전에 배치 어플리케이션이란 어떤 것인
   Spring Batch에서 **Job은 하나의 배치 작업 단위**를 얘기하는데요. 
   Job 안에는 아래처럼 여러 Step이 존재하고, Step 안에 Tasklet 혹은 Reader & Processor & Writer 묶음이 존재합니다.
    
-  ![batch Simple Job](../images/swchoi/springBatch6.png)
+  ![batch Simple Job](../../images/swchoi/springBatch6.png)
   
   Job안에 여러 Step이 있다는건 쉽게 이해되지만, Step이 품고 있는 단위가 애매하게 보이실 수 있습니다.
   
@@ -128,11 +128,11 @@ Spring Batch를 소개하기전에 배치 어플리케이션이란 어떤 것인
   자 그럼 한번 이 간단한 Spring Batch 어플리케이션을 실행해보겠습니다. 
   처음 만들어졌던 ```BatchdemoApplication.java```의 ```main``` 메소드를 실행하면 Batch가 실행됩니다.
   
- ![batch Simple Job](../images/swchoi/springBatch8.png)
+ ![batch Simple Job](../../images/swchoi/springBatch8.png)
  
  실행해보시면 아래처럼 ```log.info(">>>>> This is Step1")```가 잘 수행되어 로그가 찍힌것을 알 수 있습니다.
  
- ![batch Simple Job](../images/swchoi/springBatch4.png)
+ ![batch Simple Job](../../images/swchoi/springBatch4.png)
  
  처음으로 Spring Batch 프로그램을 작성해보았습니다! 
  
@@ -149,7 +149,7 @@ Spring Batch를 소개하기전에 배치 어플리케이션이란 어떤 것인
 등등 Batch 어플리케이션을 운영하기 위한 메타데이터가 여러 테이블에 나눠져 있습니다.  
  메타 테이블 구조는 아래와 같습니다.
  
- ![batch meta table](../images/swchoi/springBatch9.png)
+ ![batch meta table](../../images/swchoi/springBatch9.png)
  
  이 테이블들이 있어야만 Spring Batch가 정상 작동합니다.
  기본적으로 H2 DB를 사용할 경우엔 해당 테이블을 Boot가 실행될때 자동으로 생성해주지만, ```MySQL이나 Oracle과 같은 DB를 사용할때는 개발자가 직접 생성```해야만 합니다.
@@ -158,11 +158,11 @@ Spring Batch를 소개하기전에 배치 어플리케이션이란 어떤 것인
  
  IDE에서 파일 검색으로 schema 를 검새하면 메타 테이블들의 스키마가 DBMS에 맞춰 각각 존재하는 것을 볼 수 있습니다.
  
- ![batch meta table](../images/swchoi/springBatch10.png)
+ ![batch meta table](../../images/swchoi/springBatch10.png)
  
  각자의 DBMS 환경에 맞춰 schema-OOO.sql를 실행해주시면 됩니다. 
  
- ![batch meta table](../images/swchoi/springBatch11.png)
+ ![batch meta table](../../images/swchoi/springBatch11.png)
   
   
  
