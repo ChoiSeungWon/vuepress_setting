@@ -32,7 +32,16 @@ module.exports = {
                 children: [
                     '/tech/vuepress/',
                     '/tech/markdown/',
-                    '/tech/springbatch/SpringBatch'
+                    '/tech/springbatch/SpringBatch',
+                    '/tech/spring-project/springNav'
+                ]
+            }],
+            '/spring/': [{
+                title: '스프링 부트와 AWS로 혼자 구현하는 웹 서비스',
+                collapsable: true,
+                children: [
+                    '/spring/chater01/',
+                    '/spring/chater02/'
                 ]
             }]
         }
