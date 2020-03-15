@@ -6,3 +6,6 @@
 
 ### 2. [Spring Boot 테스트 코드 작성](../../spring/chater02/)
 
+### 3. [Spring Boot에서 JPA 사용하기](../../spring/chater03/)
+
+
