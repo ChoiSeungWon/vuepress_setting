@@ -41,7 +41,8 @@ module.exports = {
                 collapsable: true,
                 children: [
                     '/spring/chater01/',
-                    '/spring/chater02/'
+                    '/spring/chater02/',
+                    '/spring/chater03/'
                 ]
             }]
         }
