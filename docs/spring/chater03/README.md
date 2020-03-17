@@ -713,3 +713,107 @@ JPA의 엔티티 매니저(EntityManager)가 활성화된 상태로(Spring Data 
 >
 > <img src="../../images/spring/chater03/jpa12.png" width="70%" height="70%" title="h2console" alt="h2console"></img><br/>
 
+## 6. JPA Auditing으로 생성시간/수정시간 자동화하기
+
+### LocalDate 사용
+Java8부터 LocalDate와 LocalDateTime이 등장했습니다.
+그긴 Java의 기본 날짜 타입인 Date의 문제점을 제대로 고친 타입이라 Java8 이상일 경우 무조건 사용해야한다. 
+
+> 참고
+> Naver D2 - [Java의 날짜와 시간 API](https://d2.naver.com/helloworld/645609)
+
+LocalDate와 LocalDateTime이 데이터베이스에 제대로 매핑되지 않는 이슈가 Hibernate 5.2.10 버전에서 해결되었습니다.
+
+스프링 부트 1.x를 쓴다면 별도로 Hibernate 5.2.10 이상을 사용하도록 설정이 필요하지만, 스프링 부트 2.x 버전을 사용하면 기본적으로 해당 버전을 사용 중이라 별다른 설정 없이 바로 적용 가능하다.
+
+domain 패기키지에 BaseTimeEntity 클래스 생성
+
+![BaseTimeEntity](../../images/spring/chater03/jpa13.png)
+
+> **BaseTimeEntity**
+> ```java
+>package com.swchoi.webservice.springboot.domain;
+>
+>import lombok.Getter;
+>import org.springframework.data.annotation.CreatedDate;
+>import org.springframework.data.annotation.LastModifiedDate;
+>import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+>
+>import javax.persistence.EntityListeners;
+>import javax.persistence.MappedSuperclass;
+>import java.time.LocalDateTime;
+>
+>@Getter
+>@MappedSuperclass
+>@EntityListeners(AuditingEntityListener.class)
+>public class BaseTimeEntity {
+>
+>    @CreatedDate
+>    private LocalDateTime createDate;
+>
+>    @LastModifiedDate
+>    private LocalDateTime modifiedDate;
+>}
+> ```
+
+1. @MappedSuperclass
+    - JPA Entity 클래스들이 BaseTimeEntity을 상속할 경우 필드들(createDate,modifiedDate)도 컬럼으로 인식하도록 합니다.
+2. @EntityListeners(AuditingEntityListener.class)
+    - BaseTimeEntity 클래스에 Auditing 기능을 포함시킵니다.
+3. @CreatedDate
+    - Entity가 생성되어 저장될 때 시간이 자동 저장됩니다.
+4. @LastModifiedDate
+    - 조회환 Entity의 값이 변경할 때 시간이 자동 저장됩니다.
+
+- Posts 클래스가 BaseTimeEntity를 상속받도록 변경합니다.
+```java
+    ...
+public class Posts extends BaseTimeEntity {
+    ...
+}
+```
+
+- 마지막으로 JPA Auditing 어노테이션들을 모두 활성화 할수 있도록 Application 클래스에 활성화 어노테이션 추가하겠습니다.
+
+```java
+@EnableJpaAuditing // JPA Auditing 활성화
+@SpringBootApplication
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+```
+
+### JPA Auditing 테스트 코드 작성하기
+
+> **PostsRepositryTest BaseTimeEntity_등록 추가**
+> ```java
+>    @Test
+>    public void BaseTimeEntity_등록() {
+>        //given
+>        LocalDateTime now = LocalDateTime.of(2020,03,17,0,0,0);
+>        postsRepository.save(Posts.builder()
+>                .title("title")
+>                .content("content")
+>                .author("author")
+>                .build());
+>
+>        //when
+>        List<Posts> postsList = postsRepository.findAll();
+>
+>        //then
+>        Posts posts = postsList.get(0);
+>
+>        System.out.println(">>>>>>>>>>> createDate="+posts.getCreateDate()
+>                +", modeifeidDate="+posts.getModifiedDate());
+>
+>
+>        assertThat(posts.getCreateDate()).isAfter(now);
+>        assertThat(posts.getModifiedDate()).isAfter(now);
+>
+>    }
+> ```
+> 테스트 결과
+> ![BaseTimeEntity](../../images/spring/chater03/jpa14.png)
+
