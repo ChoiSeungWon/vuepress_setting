@@ -280,5 +280,436 @@ Service는```트랜잭션, 도메인 간 순서 보장```의 역할만 합니다
     * @Service에 사용되는 서비스 영역입니다.
     * 일반적으로 Controller와 Dao의 중간 영역에서 사용됩니다.
     * @Transactional이 사용되어야 하는 영역이기도 합니다.    
+* Repository Layer
+    * **Database**와 같이 데이터 저장소에 접근하는 영역
+    * Dao(Data Access Object) 영역
+* Dtos
+    * Dto(Data Transfer Object)는 **계층 간에 데이터 교환을 위한 객체**
+* Domain Model
+    * 도메인이라 불리는 개발 대상을 모든 사람이 동일한 관점에서 이해할 수 있고 공유할 수 있도록 단순화시킨 것을 도메인 모델이라고 한다.
+    * 이를테면 택시 앱이라고 하면 배차, 탑승, 요금 등이 모두 도메인이 될 수 있습니다.
+    * @Entity가 사용된 영역이 도메인 모델이다.
 
+```Web,Service,Repository,Dto,Domain``` 이 5가지 레이어에서 비지니스 처리를 담당해야 할 곳은 어디일까요? 바로 **Domain**이다.
+
+기존에 서비스로 처리하던 방식을 **트랜잭션 스크립트**라고 합니다. 주문 취소 로직을 작성한다면 다음과 같습니다.
+
+> 슈도코드
+> ```java
+> @Transactional
+> public Order cancelOrder(int orderId) {
+>   1) 데이터베이스로부터 주문정보 (Orders), 결제정보(Billing)
+>     , 배송정보(Delivery) 조회   
+>   2) 배송 취소를 해야 하는지 확인
+>   3) if(배송 중이라면) {
+>       배송 취소로 변경
+>      }
+>   4) 각 테이블에 취소 상태 Update
+> }
+> ``` 
+> 실제 코드
+> ```java
+> @Transactional
+> public Order cancelOrder(int orderId) {
+>    //1)
+>    OrderDto order = ordersDao.selectOrders(orderId);
+>    BillingDto billing = billingDao.selectBilling(orderId);
+>    DeliverDto delivery = deliveryDao.selectDelivery(orderId);
+>
+>    //2)
+>    String deliveryStatus = delivery.getStatus();
+>    
+>    //3)
+>    if("IN_PROGRESS".equals(deliveryStatus)){
+>       delivery.setStatus("CANCEL");
+>       deliveryDao.update(delivery);
+>    }
+>
+>    //4)
+>    order.setStatus("CANCEL");
+>    ordersDao.update(order);
+>      
+>    //5)
+>    billing.setStatus("CANCEL");
+>    billingDao.update(billing);
+>
+>    return order;
+> }
+> ```
+> 모든 로직이 ```서비스 클래스 내부에서 처리됩니다.``` 그러다 보니 ```서비스 계층이 무의미하며, 객체란 단순히 데이터 덩어리``` 역할만 하게 됩니다.
+
+반면 **도메인 모델에서 처리**할 경우 다음과 같은 코드가 될 수 있습니다.
+> ```java
+> @Transactional
+> public Order cancelOrder(int orderId) {
+>    //1)
+>    Order order = ordersRepository.findById(orderId);
+>    Billing billing = billingRepository.findById(orderId);
+>    Deliver delivery = deliveryRepository.findById(orderId);    
+>
+>    //2-3)
+>    delivery.cancel();
+>
+>    //4)
+>    order.cancel();
+>    billing.cancel();
+>
+>    return order;
+> }
+> ```
+> order, billing, delivery가 각자 본인의 취소 이벤트 처리를 하면, ```서비스 메소드는 트랜잭션과 도메인 간의 순서만 보장```해 줍니다.
+
+이러한 방식으로 등록, 수정, 삭제 기능을 만들어 보겠습니다.
+
+- Controller,Service,Dto 생성
+
+![posts Api](../../images/spring/chater03/jpa7.png)
+
+### 등록
+> **PostsApiController**
+> ```java
+>package com.swchoi.webservice.springboot.web;
+>
+>import com.swchoi.webservice.springboot.service.posts.PostService;
+>import com.swchoi.webservice.springboot.web.dto.PostsSaveRequestDto;
+>import lombok.RequiredArgsConstructor;
+>import org.springframework.web.bind.annotation.PostMapping;
+>import org.springframework.web.bind.annotation.RequestBody;
+>import org.springframework.web.bind.annotation.RestController;
+>
+>@RequiredArgsConstructor
+>@RestController
+>public class PostsApiController {
+>
+>    private final PostService postService;
+>
+>    @PostMapping("/api/v1/posts")
+>    public Long save(@RequestBody PostsSaveRequestDto requestDto) {
+>
+>        return postService.save(requestDto);
+>    }
+>}
+> ```
+> **PostService**
+> ```java
+>package com.swchoi.webservice.springboot.service.posts;
+>
+>import com.swchoi.webservice.springboot.domain.posts.PostsRepository;
+>import com.swchoi.webservice.springboot.web.dto.PostsSaveRequestDto;
+>import lombok.RequiredArgsConstructor;
+>import org.springframework.stereotype.Service;
+>
+>import javax.transaction.Transactional;
+>
+>@RequiredArgsConstructor
+>@Service
+>public class PostService {
+>    private final PostsRepository postsRepository;
+>
+>    @Transactional
+>    public Long save(PostsSaveRequestDto requestDto) {
+>        return postsRepository.save(requestDto.toEntity()).getId();
+>    }
+>}
+> ```
+스프링을 써보셨던 분들은 Controller 와 Service에서 @Autowired가 없는 것이 어색하게 느껴집니다. 스프링에선 Bean을 주입받는 방식들이 다음과 같습니다.
+- @Autowired
+- setter
+- 생성자
+
+이 중 가장 권장하는 방식이 **생성자로 주입**받는 방식입니다. 즉 **생성자로 Bean 객체**를 받도록 하면 @Autowired와 동일한 효과를 볼 수 있다.
+
+- **@RequiredArgsConstructor**를 통해 **final이 선언된 모든 필드**를 생성한다.
+
+> **PostsSaveRequestDto**
+> ```java
+>package com.swchoi.webservice.springboot.web.dto;
+>
+>import com.swchoi.webservice.springboot.domain.posts.Posts;
+>import lombok.Builder;
+>import lombok.Getter;
+>import lombok.NoArgsConstructor;
+>
+>@Getter
+>@NoArgsConstructor
+>public class PostsSaveRequestDto {
+>    private String title;
+>    private String content;
+>    private String author;
+>    @Builder
+>    public PostsSaveRequestDto(String title, String content,
+>                                          String author) {
+>        this.title = title;
+>        this.content = content;
+>        this.author = author;
+>    }
+>
+>    public Posts toEntity() {
+>        return Posts.builder()
+>                .title(title)
+>                .content(content)
+>                .author(author)
+>                .build();
+>    }
+>}
+> ```
+
+여기서 Entity 클래스와 거의 유사한 형태임에도 Dto클래스를 추가로 생성했습니다. 하지만, 절대로 **Entity 클래스를 Request/Response 클래스로 사용해서는 안된다.**
+Entity 클래스는 **데이터베이스와 맞닿은 핵심 클래스**입니다.
+- View Layer 와 DB Layer의 역할 분리를 철저하게 하는게 좋습니다.
+
+> **PostsApiControllerTest**
+> ```java
+>package com.swchoi.webservice.springboot.web;
+>
+>import com.swchoi.webservice.springboot.domain.posts.Posts;
+>import com.swchoi.webservice.springboot.domain.posts.PostsRepository;
+>import com.swchoi.webservice.springboot.web.dto.PostsSaveRequestDto;
+>import org.junit.After;
+>import org.junit.Test;
+>import org.junit.runner.RunWith;
+>import org.springframework.beans.factory.annotation.Autowired;
+>import org.springframework.boot.test.context.SpringBootTest;
+>import org.springframework.boot.test.web.client.TestRestTemplate;
+>import org.springframework.boot.web.server.LocalServerPort;
+>import org.springframework.http.HttpStatus;
+>import org.springframework.http.ResponseEntity;
+>import org.springframework.test.context.junit4.SpringRunner;
+>
+>import java.util.List;
+>
+>import static org.assertj.core.api.Assertions.assertThat;
+>
+>@RunWith(SpringRunner.class)
+>@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+>public class PostsApiControllerTest {
+>
+>    @LocalServerPort
+>    private int port;
+>
+>    @Autowired
+>    private TestRestTemplate restTemplate;
+>
+>    @Autowired
+>    private PostsRepository postsRepository;
+>
+>    @After
+>    public void tearDown() throws Exception {
+>        postsRepository.deleteAll();
+>    }
+>
+>    @Test
+>    public void Posts_등록된다() throws Exception {
+>        //given
+>        String title = "title";
+>        String content = "content";
+>        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
+>                .title(title)
+>                .content(content)
+>                .author("author")
+>                .build();
+>
+>        String url = "http://localhost:" + port + "/api/v1/posts";
+>
+>        //when
+>        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+>
+>        //then
+>        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+>        assertThat(responseEntity.getBody()).isGreaterThan(0L);
+>
+>        List<Posts> all = postsRepository.findAll();
+>        assertThat(all.get(0).getTitle()).isEqualTo(title);
+>        assertThat(all.get(0).getContent()).isEqualTo(content);
+>    }
+>}
+> ```
+
+* @WebMvcTest의 경우 JPA 기능이 작동하지 않기 때문에 사용하지 않았다.
+* @SpringBootTest와 TestRestTemplate 사용
+* SpringBootTest.WebEnvironment.RANDOM_PORT 랜덤 포트 사용
+
+### 수정/조회
+
+> **PostsApiController**
+> ```java
+>@RequiredArgsConstructor
+>@RestController
+>public class PostsApiController {
+>
+>	...
+>
+>    @PutMapping("/api/v1/posts/{id}")
+>    public Long update(@PathVariable Long id, @RequestBody 
+>PostsUpdateRequestDto requestDto) {
+>
+>        return postService.update(id, requestDto);
+>    }
+>
+>    @GetMapping("/api/v1/posts/{id}")
+>    public PostsResponseDto findById (@PathVariable Long id) {
+>
+>        return postService.findById(id);
+>    }
+>}
+> ```
+> **PostsResponseDto**
+> ```java
+>package com.swchoi.webservice.springboot.web.dto;
+>
+>import com.swchoi.webservice.springboot.domain.posts.Posts;
+>import lombok.Getter;
+>
+>@Getter
+>public class PostsResponseDto {
+>    private Long id;
+>    private String title;
+>    private String content;
+>    private String author;
+>
+>    public PostsResponseDto(Posts entity) {
+>        this.id = entity.getId();
+>        this.title = entity.getTitle();
+>        this.content = entity.getContent();
+>        this.author = entity.getAuthor();
+>    }
+>}
+> ```
+> **PostsResponseDto**
+> ```java
+>package com.swchoi.webservice.springboot.web.dto;
+>
+>import lombok.Builder;
+>import lombok.Getter;
+>import lombok.NoArgsConstructor;
+>
+>@Getter
+>@NoArgsConstructor
+>public class PostsUpdateRequestDto {
+>    private String title;
+>    private String content;
+>
+>    @Builder
+>    public PostsUpdateRequestDto(String title, String content) {
+>        this.title = title;
+>        this.content = content;
+>    }
+>}
+> ```
+> **Post**
+> ```java
+>@Getter
+>@NoArgsConstructor
+>@Entity
+>public class Posts {
+>
+>	...
+>	
+>    public void update(String title, String content) {
+>        this.title = title;
+>        this.content = content;
+>    }
+>}
+> ```
+> **PostService**
+> ```java
+>@RequiredArgsConstructor
+>@Service
+>public class PostService {
+>	
+>	...
+>
+>    @Transactional
+>    public Long update(Long id, PostsUpdateRequestDto requestDto) {
+>        Posts posts = postsRepository.findById(id)
+>                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id="+ id));
+>
+>        posts.update(requestDto.getTitle(), requestDto.getContent());
+>        return id;
+>    }
+>
+>    public PostsResponseDto findById (Long id) {
+>        Posts entity = postsRepository.findById(id)
+>                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id="+ id));
+>
+>        return new PostsResponseDto(entity);
+>    }
+>}
+> ```
+
+여기서 신기한 것이 있습니다. update 기능에서 데이터베이스에 **쿼리를 날리는 부분이 없습니다.** 이게 가능한 이유가 JPA의 **영속성 컨텍스트** 때문입니다.
+
+영속성 컨텍스트란, **엔티티를 영구 저장하는 환경**입니다. 일종의 놀리적 개념이라고 보시면 되며, JPA의 핵심 내용은 **엔티티가 영속성 컨텍스트에 포함되어 있냐 아니냐**로 갈립니다.
+
+JPA의 엔티티 매니저(EntityManager)가 활성화된 상태로(Spring Data Jpa를 쓴다면 기본옵션) **트랜잭션 안에서 데이터베이스에서 데이터를 가져오면** 이 데이터는 영속성 컨텍스트가 유지된 상태입니다.
+
+이 상태에서 해당 데이터의 값을 변경하면 **트랜잭션이 끝나는 시점에 해당 테이블에 변경분을 반영**합니다. 즉 Entity 객체의 값만 변경하면 별도로 **Update 쿼리를 날릴 필요가 없다**는 것이죠, 이 개념을 **더티 체킹**이라고 합니다.
+
+- 더티 체킹([Dirty Checking](https://jojoldu.tistory.com/415))이란?
+
+> **PostsApiControllerTest**
+> ```java
+>@RunWith(SpringRunner.class)
+>@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+>public class PostsApiControllerTest {
+>
+>	...
+>
+>    @Test
+>    public void Posts_수정된다() throws Exception {
+>        //given
+>        Posts savePosts = postsRepository.save(Posts.builder()
+>                .title("title")
+>                .content("content")
+>                .author("author")
+>                .build());
+>
+>        Long updateId = savePosts.getId();
+>        String expectedTitle = "title2";
+>        String expectedContent = "content2";
+>        PostsUpdateRequestDto requestDto = PostsUpdateRequestDto.builder()
+>                .title(expectedTitle)
+>                .content(expectedContent)
+>                .build();
+>
+>        String url = "http://localhost:" + port + "/api/v1/posts/" + updateId;
+>
+>        HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+>
+>        //when
+>        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
+>
+>        //then
+>        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+>        assertThat(responseEntity.getBody()).isGreaterThan(0L);
+>
+>        List<Posts> all = postsRepository.findAll();
+>        assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
+>        assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
+>    }
+>}
+> ```
+
+테스트 결과를 보면 update 쿼리가 수행된는 것을 확인 할 수 있습니다.
+> Posts 수정 API 테스트 결과
+>
+> ![POST UPDATE LOG](../../images/spring/chater03/jpa8.png)
+
+- **조회 기능은 실제로 톰갯을 실행**해서 확인해 보겠습니다.
+
+> **application.properties** 추가
+> ```
+> spring.h2.console.enabled=true
+> ```
+> 톰캣 실행 후 http://localhost:8080/h2-console 접속
+> <img src="../../images/spring/chater03/jpa9.png" width="70%" height="70%" title="h2console" alt="h2console"></img><br/>
+> SELECT * FROM posts; 쿼리 실행
+>
+> <img src="../../images/spring/chater03/jpa10.png" width="70%" height="70%" title="h2console" alt="h2console"></img><br/>
+> insert into posts(author, content, title) values ('author', 'content', 'title'); 쿼리실행
+>
+> <img src="../../images/spring/chater03/jpa11.png" width="70%" height="70%" title="h2console" alt="h2console"></img><br/>
+> **브라우저로 Posts API 조회**
+>
+> <img src="../../images/spring/chater03/jpa12.png" width="70%" height="70%" title="h2console" alt="h2console"></img><br/>
 
