@@ -399,7 +399,7 @@ Service는```트랜잭션, 도메인 간 순서 보장```의 역할만 합니다
 >import lombok.RequiredArgsConstructor;
 >import org.springframework.stereotype.Service;
 >
->import javax.transaction.Transactional;
+>import org.springframework.transaction.annotation.Transactional;
 >
 >@RequiredArgsConstructor
 >@Service
