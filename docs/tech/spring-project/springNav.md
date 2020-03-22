@@ -12,3 +12,5 @@
 ### Ch04. [Mustache로 화면 구성하기](../../spring/chater04/)
 
 ### Ch05. [스프링 시큐리티와 OAuth 2.0으로 로그인 기능 구현하기](../../spring/chater05/)
+
+### CH06. [AWS 서버 환경을 만들어보자](../../spring/chater06/)
