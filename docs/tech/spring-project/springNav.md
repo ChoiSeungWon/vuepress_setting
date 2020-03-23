@@ -16,3 +16,7 @@
 ### CH06. [AWS 서버 환경을 만들어보자](../../spring/chater06/)
 
 ### CH07. [AWS 데이터베이스 환경을 만들어보자](../../spring/chater07/)
+
+### CH08. [EC2 서버에 스프링부트 배포](../../spring/chater08/)
+
+### CH09. [Travis CI 배포 자동화](../../spring/chater09/)
