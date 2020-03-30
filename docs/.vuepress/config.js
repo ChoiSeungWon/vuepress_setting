@@ -48,7 +48,8 @@ module.exports = {
                     '/spring/chater06/',
                     '/spring/chater07/',
                     '/spring/chater08/',
-                    '/spring/chater09/'
+                    '/spring/chater09/',
+                    '/spring/chater10/'
                 ]
             }]
         }
