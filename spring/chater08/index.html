@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>EC2 서버에 스프링부트 배포 | SeungWon 기술블로그</title>
+    <meta name="description" content="Just playing around">
+    
+    
+    <link rel="preload" href="/about-me/assets/css/0.styles.aad00d23.css" as="style"><link rel="preload" href="/about-me/assets/js/app.1fd5ee7f.js" as="script"><link rel="preload" href="/about-me/assets/js/6.bb492f85.js" as="script"><link rel="prefetch" href="/about-me/assets/js/10.a427f655.js"><link rel="prefetch" href="/about-me/assets/js/11.59b8b1ef.js"><link rel="prefetch" href="/about-me/assets/js/12.0a416c4b.js"><link rel="prefetch" href="/about-me/assets/js/13.4f90a351.js"><link rel="prefetch" href="/about-me/assets/js/14.9c5ecfe1.js"><link rel="prefetch" href="/about-me/assets/js/15.4af529ca.js"><link rel="prefetch" href="/about-me/assets/js/16.1a5022af.js"><link rel="prefetch" href="/about-me/assets/js/17.e32e52bb.js"><link rel="prefetch" href="/about-me/assets/js/18.18c05ca0.js"><link rel="prefetch" href="/about-me/assets/js/19.54bd122f.js"><link rel="prefetch" href="/about-me/assets/js/2.6be79372.js"><link rel="prefetch" href="/about-me/assets/js/20.5fe215a6.js"><link rel="prefetch" href="/about-me/assets/js/3.05835132.js"><link rel="prefetch" href="/about-me/assets/js/4.58042996.js"><link rel="prefetch" href="/about-me/assets/js/5.053d4dcf.js"><link rel="prefetch" href="/about-me/assets/js/7.be9fab67.js"><link rel="prefetch" href="/about-me/assets/js/8.f5703b5a.js"><link rel="prefetch" href="/about-me/assets/js/9.140de9e0.js">
+    <link rel="stylesheet" href="/about-me/assets/css/0.styles.aad00d23.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/about-me/" class="home-link router-link-active"><!----> <span class="site-name">SeungWon 기술블로그</span></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/about-me/" class="nav-link">Home</a></div><div class="nav-item"><a href="/about-me/tech/" class="nav-link">Tech</a></div><div class="nav-item"><a href="/about-me/swchoi/" class="nav-link">about</a></div> <a href="https://github.com/ChoiSeungWon/about-me" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/about-me/" class="nav-link">Home</a></div><div class="nav-item"><a href="/about-me/tech/" class="nav-link">Tech</a></div><div class="nav-item"><a href="/about-me/swchoi/" class="nav-link">about</a></div> <a href="https://github.com/ChoiSeungWon/about-me" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><div class="sidebar-group first collapsable"><p class="sidebar-heading open"><span>스프링 부트와 AWS로 혼자 구현하는 웹 서비스</span> <span class="arrow down"></span></p> <ul class="sidebar-group-items"><li><a href="/about-me/spring/chater01/" class="sidebar-link">Gradle Spring Boot 프로젝트 생성</a></li><li><a href="/about-me/spring/chater02/" class="sidebar-link">Spring Boot 테스트 코드 작성</a></li><li><a href="/about-me/spring/chater03/" class="sidebar-link">Spring Boot에서 JPA 사용하기</a></li><li><a href="/about-me/spring/chater04/" class="sidebar-link">Mustache로 화면 구성하기</a></li><li><a href="/about-me/spring/chater05/" class="sidebar-link">스프링 시큐리티와 OAuth 2.0으로 로그인 기능 구현하기</a></li><li><a href="/about-me/spring/chater06/" class="sidebar-link">AWS 서버 환경을 만들어보자</a></li><li><a href="/about-me/spring/chater07/" class="sidebar-link">AWS 데이터베이스 환경을 만들어보자</a></li><li><a href="/about-me/spring/chater08/" class="active sidebar-link">EC2 서버에 스프링부트 배포</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/about-me/spring/chater08/#_1-ec2에-프로젝트-clone-받기" class="sidebar-link">1. EC2에 프로젝트 Clone 받기</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater08/#_2-배포-스크립트-만들기" class="sidebar-link">2. 배포 스크립트 만들기</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater08/#_3-외부-security-파일-등록" class="sidebar-link">3. 외부 Security 파일 등록</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater08/#_4-스프링-부트-프로젝트로-rds-접근하기" class="sidebar-link">4. 스프링 부트 프로젝트로 RDS 접근하기</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/about-me/spring/chater08/#rds-테이블-생성" class="sidebar-link">RDS 테이블 생성</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater08/#프로젝트-설정" class="sidebar-link">프로젝트 설정</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater08/#ec2-설정" class="sidebar-link">EC2 설정</a></li></ul></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater08/#_5-ec2에서-소셜-로그인-설정" class="sidebar-link">5. EC2에서 소셜 로그인 설정</a></li></ul></li><li><a href="/about-me/spring/chater09/" class="sidebar-link">Travis CI 배포 자동화</a></li><li><a href="/about-me/spring/chater10/" class="sidebar-link">NGINX 무중단 배포</a></li></ul></div></li></ul> </div> <div class="page"> <div class="content"><h1 id="ec2-서버에-스프링부트-배포"><a href="#ec2-서버에-스프링부트-배포" aria-hidden="true" class="header-anchor">#</a> EC2 서버에 스프링부트 배포</h1> <h2 id="_1-ec2에-프로젝트-clone-받기"><a href="#_1-ec2에-프로젝트-clone-받기" aria-hidden="true" class="header-anchor">#</a> 1. EC2에 프로젝트 Clone 받기</h2> <p>먼저 깃허브에서 코드를 받아올 수 있게 EC2에 깃을 설치해야한다.</p> <p>EC2로 접속해서 다음과 같이 명령어를 입력합니다.</p> <blockquote><p><code>git 설치</code></p> <div class="language- extra-class"><pre class="language-text"><code>sudo yum install git
+</code></pre></div><p><code>git 버전 확인</code></p> <div class="language- extra-class"><pre class="language-text"><code>git --version
+</code></pre></div><p><code>프로젝트 디렉토리 생성</code></p> <div class="language- extra-class"><pre class="language-text"><code>mkdir ~/app &amp;&amp; mkdir ~/app/step1
+</code></pre></div><p><code>프로젝트 디렉트리 이동</code></p> <div class="language- extra-class"><pre class="language-text"><code>cd ~/app/step1
+</code></pre></div><p><code>git clone</code></p> <div class="language- extra-class"><pre class="language-text"><code>git clone 주소
+</code></pre></div><p><img src="/about-me/assets/img/deploy1.6616b165.png" width="100%" height="100%" title="git clone" alt="git clone"><br> <code>프로젝트 확인</code></p> <div class="language- extra-class"><pre class="language-text"><code>cd 프로젝트명
+ll
+</code></pre></div><p><img src="/about-me/assets/img/deploy2.fc34d3df.png" width="100%" height="100%" title="ll" alt="ll"><br></p> <p><code>단위 테스트만 수행</code></p> <div class="language- extra-class"><pre class="language-text"><code>./gradlew test
+</code></pre></div><p><code>실행 결과</code></p> <p><img src="/about-me/assets/img/deploy3.318a5bd5.png" width="100%" height="100%" title="gradlew" alt="gradlew"><br> <code>실행 권한 추가</code></p> <div class="language- extra-class"><pre class="language-text"><code>chmod +x ./gradlew
+</code></pre></div><p><code>단위 테스트만 수행</code></p> <div class="language- extra-class"><pre class="language-text"><code>./gradlew test
+</code></pre></div><p><img src="/about-me/assets/img/deploy4.9a3728f0.png" width="100%" height="100%" title="gradlew" alt="gradlew"><br>
+현재 ec2엔 그레이들(Gradle)을 설치하지 않았습니다. 하지만 Gradle Task(test)를 수행 할 수 있습니다. 이는 프로젝트 내부에 포함된 gradlew 파일 때문입니다.</p></blockquote> <h2 id="_2-배포-스크립트-만들기"><a href="#_2-배포-스크립트-만들기" aria-hidden="true" class="header-anchor">#</a> 2. 배포 스크립트 만들기</h2> <ol><li>git clone 혹은 git pull을 통해 새 버전의 프로젝트 받음</li> <li>Gradle이나 Maven을 통해 프로젝트 테스트와 빌드</li> <li>EC2 서버에서 해당 프로젝트 실행 및 재실행</li></ol> <p>이 3가지에 대해서 쉘스크립트를 작성하겠습니다.</p> <blockquote><p><code>deploy.sh 생성</code></p> <div class="language- extra-class"><pre class="language-text"><code>vim ~/app/step1/deploy.sh
+</code></pre></div><p><code>deploy.sh 작성</code></p> <div class="language- extra-class"><pre class="language-text"><code>#!/bin/bash
+
+REPOSITORY=/home/ec2-user/app/step1
+PROJECT_NAME=springboot-webservice
+
+cd $REPOSITORY/$PROJECT_NAME/
+
+echo &quot;&gt; Git Pull&quot;
+
+git pull
+
+echo &quot;&gt; 프로젝트 Build 시작&quot;
+
+./gradlew build
+
+echo &quot;&gt; step1 디렉토리 이동&quot;
+
+cd $REPOSITORY
+
+echo &quot;&gt; Build 파일 복사&quot;
+
+cp $REPOSITORY/$PROJECT_NAME/build/libs/*.jar $REPOSITORY/
+
+echo &quot;&gt; 현재 구동중인 애플리케이션 pid 확인&quot;
+
+CURRENT_PID=$(pgrep -f ${PROJECT_NAME}*.jar)
+
+echo &quot;현재 구동 중인 애플리케이션 pid: $CURRENT_PID&quot;
+
+if [ -z &quot;$CURRENT_PID&quot; ]; then
+   echo &quot;&gt; 현재 구동 중인 애플리케이션이 없으므로 종료하지 않습니다.&quot;
+else
+   echo &quot;&gt; kill -15 $CURRENT_PID&quot;
+   kill -15 $CURRENT_PID
+   sleep 5
+fi
+
+echo &quot;&gt; 새 애플리케이션 배포&quot;
+
+JAR_NAME=$(ls -tr $REPOSITORY/ | grep *.jar | tail -n 1)
+
+echo &quot;&gt; JAR Name: $JAR_NAME&quot;
+
+nohup java -jar $REPOSITORY/$JAR_NAME 2&gt;&amp;1 &amp;
+</code></pre></div></blockquote> <h4 id="코드-설명"><a href="#코드-설명" aria-hidden="true" class="header-anchor">#</a> 코드 설명</h4> <ol><li><strong>변수 지정</strong> <ul><li>프로젝트 디렉토리 주소는 스크립트 내에서 자주 사용하는 값이 때문에 변수 지정</li> <li>REPOSITORY=/home/ec2-user/app/step1</li> <li>PROJECT_NAME=springboot-webservice</li> <li>쉘에서는 타입 ㅇ벗이 선언하여 지정합니다.</li> <li>쉘에서는 $ 변수명으로 변수를 사용할 수 있습니다.</li></ul></li> <li><strong>git pull</strong> <ul><li>master 브랜치의 최신 내용을 받습니다.</li></ul></li> <li><strong>./gradlew build</strong> <ul><li>프로젝트 내부의 gradlew로 build를 수행합니다.</li></ul></li> <li><strong>CURRENT_PID=$(pgrep -f ${PROJECT_NAME}*.jar)</strong> <ul><li>기존에 수행 중이던 스프링 부트 process id 추출 명령어</li> <li>-f 옵션은 프로세스 이름으로 찻습니다.</li></ul></li> <li>*<em>JAR_NAME=$(ls -tr $REPOSITORY/ | grep <em>.jar | tail -n 1)</em></em> <ul><li>새로 실행할 jar 파일명을 찾습니다.</li> <li>여러 jar 파일이 생기기 때문에 tail -n로 가장 나중의 jar파일을 변수에 저장합니다.</li></ul></li> <li><strong>nohup java -jar $REPOSITORY/$JAR_NAME 2&gt;&amp;1 &amp;</strong> <ul><li>찾은 jar 파일명으로 해당 jar파일을 nohup으로 실행합니다.</li> <li>스프링 부트의 장점으로 특별히 외장 톰캣을 설치할 필요가 없습니다.</li> <li>내장 톰캣을 사용해서 jar 파일만 있으면 바로 웹 애플리케이션 서버를 실행할 수 있습니다.</li> <li>nohup으로 실행을 시키려면 실행파일 권한이 755이상으로 되어있어야 함</li> <li>명령어 뒤에 '&amp;'를 추가하면 백그라운드로 실행됨</li> <li>nohup 을 통해 프로그램을 실행시키면 nohup.log 라는 로그 파일 생성</li></ul></li></ol> <blockquote><p><code>deploy.sh 실행 권한 추가</code></p> <div class="language- extra-class"><pre class="language-text"><code>chmod +x ./deploy.sh
+</code></pre></div><p><img src="data:image/png;base64,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" width="100%" height="100%" title="deploy.sh" alt="deploy.sh"><br></p> <p><code>deploy.sh 실행</code></p> <div class="language- extra-class"><pre class="language-text"><code>./deploy.sh
+</code></pre></div><p><img src="/about-me/assets/img/deploy6.1bbad10e.png" width="100%" height="100%" title="deploy.sh" alt="deploy.sh"><br></p></blockquote> <p>배포 스크립트가 잘 실행되는 것을 볼 수 있다.</p> <h2 id="_3-외부-security-파일-등록"><a href="#_3-외부-security-파일-등록" aria-hidden="true" class="header-anchor">#</a> 3. 외부 Security 파일 등록</h2> <p>oauth 관련 proerties를 작성하자</p> <blockquote><p><code>application-oauth.properties 작성</code></p> <div class="language- extra-class"><pre class="language-text"><code>vim /home/ec2-user/app/application-oauth.properties
+</code></pre></div><p>로컬에 있는 application-oauth.properties 파일 내용 그대로 붙여넣기를 합니다.
+<code>deploy.sh 파일 수정</code></p> <div class="language- extra-class"><pre class="language-text"><code>...
+nohup java -jar \ 
+   -Dspring.config.location=classpath:/application.properties,/home/ec2-user/app/application-oauth.properties \ 
+$JAR_NAME &gt; $REPOSITORY/$JAR_NAME 2&gt;&amp;1 &amp;
+</code></pre></div></blockquote> <h4 id="코드설명"><a href="#코드설명" aria-hidden="true" class="header-anchor">#</a> 코드설명</h4> <ol><li><strong>-Dspring.config.location</strong> <ul><li>스프링 설정 파일 위치를 지정합니다.</li> <li>classpath가 붙으면 jar 안에 있는 resources 디렉트리 기준으로 경로가 생성됩니다.</li> <li>application-oauth.properties은 절대경로를 사용합니다.</li></ul></li></ol> <h2 id="_4-스프링-부트-프로젝트로-rds-접근하기"><a href="#_4-스프링-부트-프로젝트로-rds-접근하기" aria-hidden="true" class="header-anchor">#</a> 4. 스프링 부트 프로젝트로 RDS 접근하기</h2> <ol><li>테이블 생성 : H2에서 자동 생성해주던 테이블들을 MariaDB에선 직접 쿼리를 이용</li> <li>프로젝트 설정: MariaDB 드라이버 설정</li> <li>EC2설정</li></ol> <h3 id="rds-테이블-생성"><a href="#rds-테이블-생성" aria-hidden="true" class="header-anchor">#</a> RDS 테이블 생성</h3> <blockquote><p><code>테이블 생성</code></p> <div class="language- extra-class"><pre class="language-text"><code>Hibernate: create table posts (id bigint not null auto_increment, create_date datetime, modified_date datetime, author varchar(255), content TEXT not null, title varchar(500) not null, primary key (id)) engine=InnoDB
+Hibernate: create table user (id bigint not null auto_increment, create_date datetime, modified_date datetime, email varchar(255) not null, name varchar(255) not null, picture varchar(255), role varchar(255) not null, primary key (id)) engine=InnoDB
+</code></pre></div><p><code>스프링 세션 테이블</code></p> <div class="language- extra-class"><pre class="language-text"><code>CREATE TABLE SPRING_SESSION (
+	PRIMARY_ID CHAR(36) NOT NULL,
+	SESSION_ID CHAR(36) NOT NULL,
+	CREATION_TIME BIGINT NOT NULL,
+	LAST_ACCESS_TIME BIGINT NOT NULL,
+	MAX_INACTIVE_INTERVAL INT NOT NULL,
+	EXPIRY_TIME BIGINT NOT NULL,
+	PRINCIPAL_NAME VARCHAR(100),
+	CONSTRAINT SPRING_SESSION_PK PRIMARY KEY (PRIMARY_ID)
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
+
+CREATE UNIQUE INDEX SPRING_SESSION_IX1 ON SPRING_SESSION (SESSION_ID);
+CREATE INDEX SPRING_SESSION_IX2 ON SPRING_SESSION (EXPIRY_TIME);
+CREATE INDEX SPRING_SESSION_IX3 ON SPRING_SESSION (PRINCIPAL_NAME);
+
+CREATE TABLE SPRING_SESSION_ATTRIBUTES (
+	SESSION_PRIMARY_ID CHAR(36) NOT NULL,
+	ATTRIBUTE_NAME VARCHAR(200) NOT NULL,
+	ATTRIBUTE_BYTES BLOB NOT NULL,
+	CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
+	CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
+) ENGINE=InnoDB ROW_FORMAT=DYNAMIC;
+</code></pre></div></blockquote> <h3 id="프로젝트-설정"><a href="#프로젝트-설정" aria-hidden="true" class="header-anchor">#</a> 프로젝트 설정</h3> <blockquote><p><code>build.gradle</code></p> <div class="language- extra-class"><pre class="language-text"><code>compile(&quot;org.mariadb.jdbc:mariadb-java-client&quot;)
+</code></pre></div><p><code>운영 application-real.properties 작성</code></p> <div class="language- extra-class"><pre class="language-text"><code>spring.profiles.include=oauth,real-db
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialect
+spring.session.store-type=jdbc
+</code></pre></div></blockquote> <h3 id="ec2-설정"><a href="#ec2-설정" aria-hidden="true" class="header-anchor">#</a> EC2 설정</h3> <blockquote><p><code>운영 application-real-db.properties 생성</code></p> <div class="language- extra-class"><pre class="language-text"><code>vim ~/app/application-real-db.properties
+</code></pre></div><p><code>운영 application-real-db.properties 작성</code></p> <div class="language- extra-class"><pre class="language-text"><code>spring.jpa.hibernate.ddl-auto=none
+
+spring.datasource.url=jdbc:mariadb://rds주소:포트명(기본은 3306)/database명
+spring.datasource.username=db계정
+spring.datasource.password=db계정 비밀번호
+spring.datasource.driver-class-name=org.mariadb.jdbc.Driver
+</code></pre></div></blockquote> <h4 id="코드설명-2"><a href="#코드설명-2" aria-hidden="true" class="header-anchor">#</a> 코드설명</h4> <ol><li><strong>spring.jpa.hibernate.ddl-auto=none</strong> <ul><li>JPA로 테이블이 자동 생성되는 옵션을 None(생성하지 않음)으로 지정</li> <li>RDS에는 실제 운영으로 사용될 테이블이니 절대 스프링 부트에서 새로 만들지 않도록 해야 합니다.</li> <li>이 옵션을 하지 않으면 자칫 테이블이 모두 새로 생성될 수 있습니다.</li> <li>주의해야 하는 옵션입니다.</li></ul></li></ol> <blockquote><p><code>deploy.sh 수정</code></p> <div class="language- extra-class"><pre class="language-text"><code>...
+nohup java -jar \
+   -Dspring.config.location=classpath:/application.properties,classpath:/application-real.properties,/home/ec2-user/app/application-oauth.properties,/home/ec2-user/app/application-real-db.properties \
+   -Dspring.profiles.active=real \
+   $JAR_NAME &gt; $REPOSITORY/nohup.out 2&gt;&amp;1 &amp;
+</code></pre></div><p><code>deploy.sh 재실행</code></p> <div class="language- extra-class"><pre class="language-text"><code>./deploy.sh
+</code></pre></div><p><code>curl localhost:8080 확인</code></p> <p><img src="/about-me/assets/img/deploy9.5cad6b7d.png" width="100%" height="100%" title="deploy.sh" alt="deploy.sh"><br></p></blockquote> <h2 id="_5-ec2에서-소셜-로그인-설정"><a href="#_5-ec2에서-소셜-로그인-설정" aria-hidden="true" class="header-anchor">#</a> 5. EC2에서 소셜 로그인 설정</h2> <h4 id="aws-보안-그룹-변경"><a href="#aws-보안-그룹-변경" aria-hidden="true" class="header-anchor">#</a> AWS 보안 그룹 변경</h4> <blockquote><p><code>EC2 보안 그룹 체크</code></p> <p><img src="/about-me/assets/img/deploy10.fe741c2a.png" width="100%" height="100%" title="보안" alt="보안"><br></p></blockquote> <h4 id="aws-ec2-도메인으로-접속"><a href="#aws-ec2-도메인으로-접속" aria-hidden="true" class="header-anchor">#</a> AWS EC2 도메인으로 접속</h4> <blockquote><p><code>EC2 퍼블릭 DNS 확인</code></p> <p><img src="/about-me/assets/img/deploy11.408affe1.png" width="80%" height="100%" title="DNS" alt="DNS"><br> <code>EC2 퍼블릭 DNS 접속</code></p> <p><img src="/about-me/assets/img/deploy12.99dfce8e.png" width="100%" height="100%" title="DNS" alt="DNS"><br></p></blockquote> <h4 id="구글-ec2-주소-등록"><a href="#구글-ec2-주소-등록" aria-hidden="true" class="header-anchor">#</a> 구글 EC2 주소 등록</h4> <blockquote><p><code>OAuth 동의 화면 승인된 도메인 등록</code></p> <p><img src="/about-me/assets/img/deploy13.b6fe7a89.png" width="80%" height="100%" title="DNS" alt="DNS"><br> <code>사용자 인증 정보 추가</code></p> <p><img src="/about-me/assets/img/deploy14.a010b786.png" width="80%" height="100%" title="DNS" alt="DNS"><br> <code>EC2에서 구글 로그인 성공</code></p> <p><img src="/about-me/assets/img/deploy15.70455d3f.png" width="80%" height="100%" title="Google" alt="Google"><br></p></blockquote> <h4 id="네이버-ec2-주소-등록"><a href="#네이버-ec2-주소-등록" aria-hidden="true" class="header-anchor">#</a> 네이버 EC2 주소 등록</h4> <blockquote><p><code>네이버 애플리케이션 설정</code></p> <p><img src="/about-me/assets/img/deploy16.26b7b04e.png" width="80%" height="100%" title="Naver" alt="Naver"><br></p></blockquote> <ol><li>서비스 URL
+<ul><li>로그인을 시도하는 서비스가 네이버에 등록된 서비스인지 판단하기 위한 항목</li> <li>포트 제외하고 실제 도메인 주소만 입력합니다.</li> <li>네이버에서 아직 지원되지 않아 하나만 등록 가능합니다.</li></ul></li> <li>Callback URL
+<ul><li>전체 주소를 등록합니다.(EC2 퍼블릭 DNS:8080/login/oauth2/code/naver)</li></ul></li></ol> <blockquote><p><code>EC2에서 네이버 로그인 성공</code></p> <p><img src="/about-me/assets/img/deploy17.9f8848b8.png" width="80%" height="100%" title="Naver" alt="Naver"><br></p></blockquote></div> <div class="page-edit"><div class="edit-link"><a href="https://github.com/ChoiSeungWon/about-me/edit/master/docs/spring/chater08/README.md" target="_blank" rel="noopener noreferrer">Edit this page</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <div class="last-updated"><span class="prefix">Last Updated: </span> <span class="time">3/23/2020, 2:24:56 PM</span></div></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/about-me/spring/chater07/" class="prev">
+          AWS 데이터베이스 환경을 만들어보자
+        </a></span> <span class="next"><a href="/about-me/spring/chater09/">
+          Travis CI 배포 자동화
+        </a>
+        →
+      </span></p></div> </div> <!----></div></div>
+    <script src="/about-me/assets/js/app.1fd5ee7f.js" defer></script><script src="/about-me/assets/js/6.bb492f85.js" defer></script>
+  </body>
+</html>

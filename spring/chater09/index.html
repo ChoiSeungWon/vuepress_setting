@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Travis CI 배포 자동화 | SeungWon 기술블로그</title>
+    <meta name="description" content="Just playing around">
+    
+    
+    <link rel="preload" href="/about-me/assets/css/0.styles.aad00d23.css" as="style"><link rel="preload" href="/about-me/assets/js/app.1fd5ee7f.js" as="script"><link rel="preload" href="/about-me/assets/js/2.6be79372.js" as="script"><link rel="prefetch" href="/about-me/assets/js/10.a427f655.js"><link rel="prefetch" href="/about-me/assets/js/11.59b8b1ef.js"><link rel="prefetch" href="/about-me/assets/js/12.0a416c4b.js"><link rel="prefetch" href="/about-me/assets/js/13.4f90a351.js"><link rel="prefetch" href="/about-me/assets/js/14.9c5ecfe1.js"><link rel="prefetch" href="/about-me/assets/js/15.4af529ca.js"><link rel="prefetch" href="/about-me/assets/js/16.1a5022af.js"><link rel="prefetch" href="/about-me/assets/js/17.e32e52bb.js"><link rel="prefetch" href="/about-me/assets/js/18.18c05ca0.js"><link rel="prefetch" href="/about-me/assets/js/19.54bd122f.js"><link rel="prefetch" href="/about-me/assets/js/20.5fe215a6.js"><link rel="prefetch" href="/about-me/assets/js/3.05835132.js"><link rel="prefetch" href="/about-me/assets/js/4.58042996.js"><link rel="prefetch" href="/about-me/assets/js/5.053d4dcf.js"><link rel="prefetch" href="/about-me/assets/js/6.bb492f85.js"><link rel="prefetch" href="/about-me/assets/js/7.be9fab67.js"><link rel="prefetch" href="/about-me/assets/js/8.f5703b5a.js"><link rel="prefetch" href="/about-me/assets/js/9.140de9e0.js">
+    <link rel="stylesheet" href="/about-me/assets/css/0.styles.aad00d23.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/about-me/" class="home-link router-link-active"><!----> <span class="site-name">SeungWon 기술블로그</span></a> <div class="links" style="max-width:nullpx;"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/about-me/" class="nav-link">Home</a></div><div class="nav-item"><a href="/about-me/tech/" class="nav-link">Tech</a></div><div class="nav-item"><a href="/about-me/swchoi/" class="nav-link">about</a></div> <a href="https://github.com/ChoiSeungWon/about-me" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav></div></header> <div class="sidebar-mask"></div> <div class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/about-me/" class="nav-link">Home</a></div><div class="nav-item"><a href="/about-me/tech/" class="nav-link">Tech</a></div><div class="nav-item"><a href="/about-me/swchoi/" class="nav-link">about</a></div> <a href="https://github.com/ChoiSeungWon/about-me" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></nav>  <ul class="sidebar-links"><li><div class="sidebar-group first collapsable"><p class="sidebar-heading open"><span>스프링 부트와 AWS로 혼자 구현하는 웹 서비스</span> <span class="arrow down"></span></p> <ul class="sidebar-group-items"><li><a href="/about-me/spring/chater01/" class="sidebar-link">Gradle Spring Boot 프로젝트 생성</a></li><li><a href="/about-me/spring/chater02/" class="sidebar-link">Spring Boot 테스트 코드 작성</a></li><li><a href="/about-me/spring/chater03/" class="sidebar-link">Spring Boot에서 JPA 사용하기</a></li><li><a href="/about-me/spring/chater04/" class="sidebar-link">Mustache로 화면 구성하기</a></li><li><a href="/about-me/spring/chater05/" class="sidebar-link">스프링 시큐리티와 OAuth 2.0으로 로그인 기능 구현하기</a></li><li><a href="/about-me/spring/chater06/" class="sidebar-link">AWS 서버 환경을 만들어보자</a></li><li><a href="/about-me/spring/chater07/" class="sidebar-link">AWS 데이터베이스 환경을 만들어보자</a></li><li><a href="/about-me/spring/chater08/" class="sidebar-link">EC2 서버에 스프링부트 배포</a></li><li><a href="/about-me/spring/chater09/" class="active sidebar-link">Travis CI 배포 자동화</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#_1-ci-cd-소개" class="sidebar-link">1. CI &amp; CD 소개</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#_2-travis-ci-연동" class="sidebar-link">2. Travis CI 연동</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#travis-ci-웹-서비스-설정" class="sidebar-link">Travis CI 웹 서비스 설정</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#프로젝트-설정" class="sidebar-link">프로젝트 설정</a></li></ul></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#_3-travis-ci와-aws-s3-연동" class="sidebar-link">3. Travis CI와 AWS S3 연동</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#aws-key-발급" class="sidebar-link">AWS Key 발급</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#travis-ci에-키-등록" class="sidebar-link">Travis CI에 키 등록</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#s3-버킷-생성" class="sidebar-link">S3 버킷 생성</a></li></ul></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#_4-travis-ci와-aws-s3-codedeploy-연동" class="sidebar-link">4. Travis CI와 AWS S3, CodeDeploy 연동</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#ec2에-iam-역할-추가하기" class="sidebar-link">EC2에 IAM 역할 추가하기</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#codedeploy를-위한-권한-생성" class="sidebar-link">CodeDeploy를 위한 권한 생성</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#codedeploy-생성" class="sidebar-link">CodeDeploy 생성</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#travis-ci-s3-codedeploy-연동" class="sidebar-link">Travis CI, S3, CodeDeploy 연동</a></li></ul></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#_5-배포-자동화-구성" class="sidebar-link">5. 배포 자동화 구성</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#deploy-sh-파일-추가" class="sidebar-link">deploy.sh 파일 추가</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#travis-yml-수정" class="sidebar-link">.travis.yml 수정</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#appspec-yml-추가" class="sidebar-link">appspec.yml 추가</a></li><li class="sidebar-sub-header"><a href="/about-me/spring/chater09/#codedeploy-로그-확인" class="sidebar-link">CodeDeploy 로그 확인</a></li></ul></li></ul></li><li><a href="/about-me/spring/chater10/" class="sidebar-link">NGINX 무중단 배포</a></li></ul></div></li></ul> </div> <div class="page"> <div class="content"><h1 id="travis-ci-배포-자동화"><a href="#travis-ci-배포-자동화" aria-hidden="true" class="header-anchor">#</a> Travis CI 배포 자동화</h1> <h2 id="_1-ci-cd-소개"><a href="#_1-ci-cd-소개" aria-hidden="true" class="header-anchor">#</a> 1. CI &amp; CD 소개</h2> <h4 id="ci-continouous-integration-지속적인-통합"><a href="#ci-continouous-integration-지속적인-통합" aria-hidden="true" class="header-anchor">#</a> CI(Continouous Integration - 지속적인 통합)</h4> <ul><li>코드 버전 관리를 하는 VCS 시스템(Git Svn등)에 PUSH가 되면 자동으로 테스트와 빌드가 수행되어 <strong>안정적인 배포 파일을 만드는 과정</strong>
+여기서 중요한 것은 <strong>테스팅 자동화</strong>입니다. 지속적으로 통합하기 위해선는 프로젝트가 완전한 상태임을 보장하기 위해 테스트 코드가 구현되어 있어야만 합니다.</li></ul> <h4 id="cd-continuous-deployment-지속적인-배포"><a href="#cd-continuous-deployment-지속적인-배포" aria-hidden="true" class="header-anchor">#</a> CD(Continuous Deployment - 지속적인 배포)</h4> <ul><li>빌드 결과를 자동으로 운영 서버에 무중단 배포까지 진행되는 과정</li></ul> <h2 id="_2-travis-ci-연동"><a href="#_2-travis-ci-연동" aria-hidden="true" class="header-anchor">#</a> 2. Travis CI 연동</h2> <p>Travis CI는 깃허브에서제공하는 무료 CI 서비스입니다.</p> <h3 id="travis-ci-웹-서비스-설정"><a href="#travis-ci-웹-서비스-설정" aria-hidden="true" class="header-anchor">#</a> Travis CI 웹 서비스 설정</h3> <p><a href="https://travis-ci.org/" target="_blank" rel="noopener noreferrer">Travis CI Web Service<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a>에서 깃허브 계정으로 로그인 후 설정창 이동</p> <blockquote><p><code>travis 설정창 이동</code></p> <p><img src="/about-me/assets/img/travis1.8561e049.png" width="100%" height="100%" title="Naver" alt="Naver"><br> <code>깃허브 저장소 활성화</code></p> <p><img src="data:image/png;base64,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" width="100%" height="100%" title="Naver" alt="Naver"><br> <code>깃허브 저장소 빌드 목록</code></p> <p><img src="/about-me/assets/img/travis3.721affc4.png" width="100%" height="100%" title="Naver" alt="Naver"><br></p></blockquote> <h3 id="프로젝트-설정"><a href="#프로젝트-설정" aria-hidden="true" class="header-anchor">#</a> 프로젝트 설정</h3> <p>Travis CI의 상세한 설정은 프로젝트에 존재하는 .travis.yml 파일로 할 수 있습니다.</p> <p>프로젝트의 build.gradle과 같은 위치에서 .travis.yml을 생성한 후 다음의 코드를 작성한다.</p> <blockquote><p><code>.travis.yml 작성</code></p> <div class="language- extra-class"><pre class="language-text"><code>language: java
+jdk:
+ - openjdk8
+
+branches:
+ only:
+   - master
+
+# Travis CI 서버의 Home
+cache:
+ directories:
+   - '$HOME/.m2/repository'
+   - '$HOME/.gradle'
+
+before_install:
+ - chmod +x gradlew
+     
+script: &quot;./gradlew clean build&quot;
+     
+# CI 실행 완료 시 메일로 알람
+notifications:
+ email:
+   recipients: 
+     - 본인 메일 주소
+
+</code></pre></div></blockquote> <h4 id="코드설명"><a href="#코드설명" aria-hidden="true" class="header-anchor">#</a> 코드설명</h4> <ol><li><strong>branches</strong> <ul><li>Travis CI를 어느 브랜치가 푸시될 때 수행할지 지정합니다.</li> <li>현재 옵션은 오직 master 브랜치에 push될 때만 수행합니다.</li></ul></li> <li><strong>cache</strong> <ul><li>그레이들을 통해 의존성을 받게 되면 이를 해단 디렉토리에 캐시하여, <strong>같은 의존성은 다음 배포 때부터 다시 받지 않도록</strong> 설정</li></ul></li> <li><strong>script</strong> <ul><li>master 브랜치에 푸시되었을 때 수행하는 명령어입니다.</li></ul></li> <li><strong>notifications</strong> <ul><li>Travis CI 실행 완료 시 자동으로 알람이 가도록 설정합니다.</li></ul></li></ol> <blockquote><p><code>master Push시 Travis CI 자동 실행</code></p> <p><img src="/about-me/assets/img/travis4.0bcc54c8.png" width="100%" height="100%" title="Naver" alt="Naver"><br> <code>Travis CI 실행 알람 수신</code></p> <p><img src="/about-me/assets/img/travis5.6f57135c.png" width="50%" height="100%" title="Naver" alt="Naver"><br></p></blockquote> <h2 id="_3-travis-ci와-aws-s3-연동"><a href="#_3-travis-ci와-aws-s3-연동" aria-hidden="true" class="header-anchor">#</a> 3. Travis CI와 AWS S3 연동</h2> <p>S3란 AWS에서 제공하는 <strong>일종의 파일 서버</strong>입니다. 이미지 파일을 비롯한 정적 파일들을 관리하거나 배포 파일들을 관리하는
+등의 기능을 지원합니다.</p> <blockquote><p><code>S3를 비롯한 AWS 서비스와 Travis CI 연동 전체 구조</code></p> <p><img src="/about-me/assets/img/travis6.d0e9e176.png" width="70%" height="100%" title alt><br></p></blockquote> <h3 id="aws-key-발급"><a href="#aws-key-발급" aria-hidden="true" class="header-anchor">#</a> AWS Key 발급</h3> <p>AWS 서비스에 <strong>외부 서비스가 접근할 수 없습니다.</strong> 그러므로 <strong>접근 가능한 권한을 가진 Key</strong>를 생성</p> <p>IAM(Identiry and Access Management)은 AWS에서 제공하는 서비스의 접근 방식과 권한을 관리합니다.</p> <blockquote><p><code>IAM 사용자 추가</code></p> <p><img src="/about-me/assets/img/travis7.e681c036.png" width="90%" height="100%" title="IAM" alt="Naver"><br> <code>사용자 세부 정보 설정</code></p> <p><img src="/about-me/assets/img/travis8.3c5b3f33.png" width="90%" height="100%" title="IAM" alt="IAM"><br> <code>S3 권한 CodeDeploy 권한 추가</code></p> <p><img src="/about-me/assets/img/travis9.bbd4149f.png" width="90%" height="100%" title="IAM" alt="IAM"><br> <img src="/about-me/assets/img/travis10.87f730d0.png" width="90%" height="100%" title="IAM" alt="IAM"><br> <code>태그 추가</code></p> <p><img src="/about-me/assets/img/travis11.a21adccf.png" width="90%" height="100%" title="IAM" alt="IAM"><br> <code>검토</code></p> <p><img src="/about-me/assets/img/travis12.28b5b38b.png" width="90%" height="100%" title="IAM" alt="IAM"><br> <code>엑세스키 확인</code></p> <p><img src="/about-me/assets/img/travis13.16545c9f.png" width="90%" height="100%" title="IAM" alt="IAM"><br></p></blockquote> <h3 id="travis-ci에-키-등록"><a href="#travis-ci에-키-등록" aria-hidden="true" class="header-anchor">#</a> Travis CI에 키 등록</h3> <blockquote><p><code>TravisCI의 환경변수 셋팅</code></p> <p><img src="/about-me/assets/img/travis14.1c8c6c28.png" width="90%" height="100%" title="Travis" alt="Travis"><br></p></blockquote> <p>여기서 등록된 값들은 이제 .travis.yml에서 $AWS_ACCESS_KEY, $AWS_SECRET_KEY란 이름으로 사용할 수 있습니다.</p> <h3 id="s3-버킷-생성"><a href="#s3-버킷-생성" aria-hidden="true" class="header-anchor">#</a> S3 버킷 생성</h3> <p>AWS의 S3서비스는 일종의 <strong>파일 서버</strong>입니다. 순수하게 파일들을 저장하고 접근 권한을 관리, 검색 등을 지원하는 파일 서버의 역할을 합니다.</p> <blockquote><p><code>버킷 만들기</code></p> <p><img src="/about-me/assets/img/travis15.49a7c871.png" width="90%" height="100%" title="버킷" alt="버킷"><br> <code>버킷 이름 짓기</code></p> <p><img src="/about-me/assets/img/travis16.31b46988.png" width="90%" height="100%" title="버킷" alt="버킷"><br> <code>모든 퍼블릭 엑세스 차단</code></p> <p><img src="/about-me/assets/img/travis17.653d4da7.png" width="90%" height="100%" title="버킷" alt="버킷"><br> <code>버킷 생성 완료</code></p> <p><img src="/about-me/assets/img/travis18.f3f7fdb4.png" width="90%" height="100%" title="버킷" alt="버킷"><br></p></blockquote> <h4 id="travis-yml-추가"><a href="#travis-yml-추가" aria-hidden="true" class="header-anchor">#</a> .travis.yml 추가</h4> <blockquote><p><code>.travis.yml 추가</code></p> <div class="language- extra-class"><pre class="language-text"><code>language: java
+jdk:
+ - openjdk8
+
+branches:
+ only:
+   - master
+
+# Travis CI 서버의 Home
+cache:
+ directories:
+   - '$HOME/.m2/repository'
+   - '$HOME/.gradle'
+
+before_install:
+ - chmod +x gradlew
+
+script: &quot;./gradlew clean build&quot;
+
+before_deploy:
+ - zip -r springboot-webservice ./*
+ - mkdir -p deploy
+ - mv springboot-webservice.zip deploy/springboot-webservice.zip
+
+deploy:
+ - provider: s3
+   access_key_id: $AWS_ACCESS_KEY
+   secret_access_key: $AWS_SECRET_KEY
+
+   bucket: swchoi-springboot-build
+   region: ap-northeast-2
+   skip_cleanup: true
+   acl: private
+   local_dir: deploy
+   wait_until_deployed : true
+
+# CI 실행 완료 시 메일로 알람
+notifications:
+ email:
+   recipients:
+     - b088081@gmail.com
+</code></pre></div></blockquote> <h4 id="코드설명-2"><a href="#코드설명-2" aria-hidden="true" class="header-anchor">#</a> 코드설명</h4> <ol><li><strong>before_deploy</strong> <ul><li>deploy 명령어가 실행되기 전 수행</li> <li>CodeDeploy는 <strong>Jar 파일은 인식하지 못하므로</strong> Jar+ 기타 설정 파일들을 모아 압축(zip)</li></ul></li> <li><strong>zip -r springboot-webservice</strong> <ul><li>현재 위치의 모든 파일을 압축</li></ul></li> <li><strong>deploy</strong> <ul><li><strong>외부 서비스와 연동될 행위들을 선언</strong></li></ul></li> <li><strong>local_dir: deploy</strong> <ul><li><strong>해당 위치의 파일들만</strong> S3로 전송</li></ul></li></ol> <blockquote><p><code>Travis CI 빌드 성공</code></p> <p><img src="/about-me/assets/img/travis19.26a1cc22.png" width="90%" height="100%" title="Travis" alt="Travis"><br> <code>S3 업로드 성공</code></p> <p><img src="/about-me/assets/img/travis20.8b5077c8.png" width="90%" height="100%" title="Travis" alt="Travis"><br></p></blockquote> <h2 id="_4-travis-ci와-aws-s3-codedeploy-연동"><a href="#_4-travis-ci와-aws-s3-codedeploy-연동" aria-hidden="true" class="header-anchor">#</a> 4. Travis CI와 AWS S3, CodeDeploy 연동</h2> <h3 id="ec2에-iam-역할-추가하기"><a href="#ec2에-iam-역할-추가하기" aria-hidden="true" class="header-anchor">#</a> EC2에 IAM 역할 추가하기</h3> <blockquote><p><code>IAM 역할 만들기</code></p> <p><img src="/about-me/assets/img/travis21.81748c32.png" width="90%" height="100%" title="IAM" alt="IAM"><br></p></blockquote> <ul><li>역할
+<ul><li>AWS 서비스에만 할당할 수 있는 권한</li> <li>EC2, CodeDeploy, SQS 등</li></ul></li> <li>사용자
+<ul><li>AWS 서비스 외에 사용할 수 있는 권한</li> <li>로컬 PC, IDC 서버등</li></ul></li></ul> <blockquote><p><code>서비스 선택</code></p> <p><img src="/about-me/assets/img/travis22.75bc92c4.png" width="90%" height="100%" title="IAM" alt="IAM"><br><br> <code>정책 선택</code></p> <p><img src="/about-me/assets/img/travis23.9f46103d.png" width="90%" height="100%" title="IAM" alt="IAM"><br><br> <code>태그 추가</code></p> <p><img src="/about-me/assets/img/travis24.588e8ac9.png" width="90%" height="100%" title="IAM" alt="IAM"><br><br> <code>검토</code></p> <p><img src="/about-me/assets/img/travis25.190569e4.png" width="90%" height="100%" title="IAM" alt="IAM"><br>
+역할 만들기 완료</p> <p><code>EC2 IAM 역할 변경하기</code></p> <p><img src="/about-me/assets/img/travis26.b4eb477d.png" width="90%" height="100%" title="EC2" alt="EC2"><br><br> <code>IAM 역할 선택</code></p> <p><img src="/about-me/assets/img/travis27.bb9a2294.png" width="90%" height="100%" title="EC2" alt="EC2"><br><br> <code>EC2 재부팅</code></p> <p><img src="/about-me/assets/img/travis28.a5f8804b.png" width="90%" height="100%" title="EC2" alt="EC2"><br><br> <code>EC2 접속 CodeDeploy 에이전트 설치</code></p> <p><img src="/about-me/assets/img/travis29.b3a60652.png" width="100%" height="100%" title="EC2" alt="EC2"><br><br> <code>실행 권한 추가</code></p> <div class="language- extra-class"><pre class="language-text"><code>chomd +x ./install
+</code></pre></div><p><code>install 파일 설치</code></p> <div class="language- extra-class"><pre class="language-text"><code>sudo ./install auto
+</code></pre></div><p><code>Agent 상태 검사</code></p> <div class="language- extra-class"><pre class="language-text"><code>sudo service codedeploy-agent status
+</code></pre></div></blockquote> <h3 id="codedeploy를-위한-권한-생성"><a href="#codedeploy를-위한-권한-생성" aria-hidden="true" class="header-anchor">#</a> CodeDeploy를 위한 권한 생성</h3> <blockquote><p><code>IAM 역할 CodeDeploy 서비스 선택</code></p> <p><img src="/about-me/assets/img/travis30.3110a9b3.png" width="70%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br> <code>권한 선택</code></p> <p><img src="/about-me/assets/img/travis31.c19d3e69.png" width="90%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br> <code>태그 추가</code></p> <p><img src="/about-me/assets/img/travis32.c206c545.png" width="90%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br> <code>검토 후 역할 만들기</code></p> <p><img src="/about-me/assets/img/travis33.066ff7c8.png" width="90%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br></p></blockquote> <h3 id="codedeploy-생성"><a href="#codedeploy-생성" aria-hidden="true" class="header-anchor">#</a> CodeDeploy 생성</h3> <p>CodeDeploy는 AWS의 배포 삼형제 중 하나입니다.</p> <ol><li>Code Commit
+<ul><li>깃허브와 같은 코드 저장소의 역할을 합니다.</li> <li>프라이빗 기능을 지우너한다는 강점이 있지만, 현재 깃허브에서 무료로 프라이빗 지원을 하고 있어서 거의 사용되지 않습니다.</li></ul></li> <li>Code Build
+<ul><li>Travis CI와 마찬가지로 <strong>빌드용 서비스</strong></li> <li>젠킨스/팀시티등을 많이 사용한다.</li></ul></li> <li>CodeDeploy
+<ul><li>AWS 배포 서비스</li> <li>앞에서 언급한 다른 서비스는 대체재가 있고, CodeDeploy는 대체제가 없습니다.</li> <li>오토 스케일링 그룹 배포, 블루 그린 배포, 롤링 배포, EC2 단독 배포 등 많은 기능을 지원한다.</li></ul></li></ol> <blockquote><p><code>CodeDeploy 생성</code></p> <p><img src="/about-me/assets/img/travis34.8f1d1b76.png" width="50%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br> <code>CodeDeploy 구성 선택</code></p> <p><img src="/about-me/assets/img/travis35.77323868.png" width="70%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br> <code>배포 그룹 생성</code></p> <p><img src="/about-me/assets/img/travis36.bc77608a.png" width="80%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br> <code>그룹 권한 입력</code></p> <p><img src="/about-me/assets/img/travis37.f72a85a5.png" width="80%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br> <code>배포 유형</code></p> <p><img src="/about-me/assets/img/travis38.2ffcc2de.png" width="80%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br>
+배포할 서비스가 2대 이상이라면 블루/그린을 선택</p> <p><code>환경 설정</code></p> <p><img src="/about-me/assets/img/travis41.bd211692.png" width="80%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br> <code>배포 설정</code></p> <p><img src="/about-me/assets/img/travis39.064ddebe.png" width="80%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br>
+배포 구성이란 한번 배포할 때 몇 대의 서버에 배포할지를 결정합니다. 2대 이상이라면 1대씩 배포할지, 30% 혹은 50%로 나눠서 배포할지 등등 여러 옵션을 사용할 수 있다.</p> <p><code>배포 그룹 생성 완료</code></p> <p><img src="/about-me/assets/img/travis40.ecb46899.png" width="80%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br></p></blockquote> <h3 id="travis-ci-s3-codedeploy-연동"><a href="#travis-ci-s3-codedeploy-연동" aria-hidden="true" class="header-anchor">#</a> Travis CI, S3, CodeDeploy 연동</h3> <ul><li>S3에서 넘겨줄 zip 파일을 저장할 디렉토리 생성</li></ul> <blockquote><p><code>EC2 디렉토리 생성</code></p> <div class="language- extra-class"><pre class="language-text"><code>mkdir ~/app/step2 &amp;&amp; mkdir ~/app/step2/zip
+</code></pre></div></blockquote> <ul><li>AWS CodeDeploy의 설정은 <strong>appspec.yml로 진행</strong>합니다.</li></ul> <blockquote><p><code>appspec.yml</code></p> <div class="language- extra-class"><pre class="language-text"><code>version: 0.0
+os : linux
+files :
+ - source : /
+   destination: /home/ec2-user/app/step2/zip/
+   overwrite : yes
+</code></pre></div></blockquote> <h4 id="코드설명-3"><a href="#코드설명-3" aria-hidden="true" class="header-anchor">#</a> 코드설명</h4> <ol><li><strong>version: 0.0</strong> <ul><li>CodeDeploy 버전</li> <li>프로젝트 버전이 아니므로 0.0 외에 다른 버전을 사용하면 오류가 발생</li></ul></li> <li><strong>source</strong> <ul><li>CodeDeploy에서 전달해 준 파일 중 destination으로 이동시킬 대상을 지정합니다.</li> <li>루트 경로(/)를 지정하면 전체 파일을 이야기 합니다.</li></ul></li> <li><strong>destination</strong> <ul><li>source에서 지정된 파일을 받는 위치</li> <li>이후 Jar를 실행하는 등은 destination에서 옮긴 파일들로 진행</li></ul></li> <li><strong>overwrite</strong> <ul><li>기존에 파일들이 있으면 덮어쓸지를 결정</li></ul></li></ol> <ul><li>.travis.yml에도 CodeDeploy 내용 추가</li></ul> <blockquote><p><code>.travis.yml</code></p> <div class="language- extra-class"><pre class="language-text"><code>...
+deploy:
+	...
+
+ - provider: codedeploy
+   access_key_id: $AWS_ACCESS_KEY
+   secret_access_key: $AWS_SECRET_KEY
+
+   bucket: swchoi-springboot-build
+   key : springboot-webservice.zip
+
+   bundle_type : zip
+   application : springboot-webservice
+
+   deplyment_group : springboot-webservice-group
+   region: ap-northeast-2
+   wait-until-deployed : true
+</code></pre></div><p><code>CodeDeploy 성공</code></p> <p><img src="/about-me/assets/img/travis42.e184132e.png" width="100%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br><br> <code>EC2 확인</code></p> <div class="language- extra-class"><pre class="language-text"><code>cd /home/ec2-user/app/step2/zip
+ll
+</code></pre></div><p><img src="/about-me/assets/img/travis43.057116de.png" width="80%" height="100%" title="CodeDeploy" alt="CodeDeploy"><br></p></blockquote> <h2 id="_5-배포-자동화-구성"><a href="#_5-배포-자동화-구성" aria-hidden="true" class="header-anchor">#</a> 5. 배포 자동화 구성</h2> <h3 id="deploy-sh-파일-추가"><a href="#deploy-sh-파일-추가" aria-hidden="true" class="header-anchor">#</a> deploy.sh 파일 추가</h3> <blockquote><p><code>deploy.sh</code></p> <div class="language- extra-class"><pre class="language-text"><code>#!/bin/bash
+
+REPOSITORY=/home/ec2-user/app/step2
+PROJECT_NAME=springboot-webservice
+
+echo &quot;&gt; Build 파일 복사&quot;
+
+cp $REPOSITORY/zip/*.jar $REPOSITORY/
+
+echo &quot;&gt; 현재 구동중인 애플리케이션 pid 확인&quot;
+
+CURRENT_PID=$(pgrep -fl $PROJECT_NAME | grep jar | awk '{print $1}')
+
+echo &quot;현재 구동 중인 애플리케이션 pid: $CURRENT_PID&quot;
+
+if [ -z &quot;$CURRENT_PID&quot; ]; then
+   echo &quot;&gt; 현재 구동 중인 애플리케이션이 없으므로 종료하지 않습니다.&quot;
+else
+   echo &quot;&gt; kill -15 $CURRENT_PID&quot;
+   kill -15 $CURRENT_PID
+   sleep 5
+fi
+
+echo &quot;&gt; 새 어플리케이션 배포&quot;
+
+JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
+
+echo &quot;&gt; JAR Name: $JAR_NAME&quot;
+
+echo &quot;&gt; $JAR_NAME 에 실행권한 추가&quot;
+
+chmod +x $JAR_NAME
+
+echo &quot;&gt; $JAR_NAME 실행&quot;
+
+nohup java -jar \
+  -Dspring.config.location=classpath:/application.properties,classpath:/application-real.properties,/home/ec2-user/app/application-oauth.properties,/home/ec2-user/app/application-real-db.properties \
+  -Dspring.profiles.active=real \
+  $JAR_NAME &gt; $REPOSITORY/nohup.out 2&gt;&amp;1 &amp;
+</code></pre></div></blockquote> <h4 id="코드설명-4"><a href="#코드설명-4" aria-hidden="true" class="header-anchor">#</a> 코드설명</h4> <ol><li><p><strong>CURRENT_PID</strong></p> <ul><li>현재 수행 중인 스프링 부트 애플리케이션 프로세스 ID를 찾습니다.</li></ul></li> <li><p><strong>$JAR_NAME &gt; $REPOSITORY/nohup.out 2&gt;&amp;1 &amp;</strong></p> <ul><li>nohup 실행 시 CodeDeploy는 무한 대기합니다.</li> <li>nohup이 끝나기 전까지 CodeDeploy도 끝나지 않으니 꼭 이렇게 해야한다.</li></ul></li></ol> <h3 id="travis-yml-수정"><a href="#travis-yml-수정" aria-hidden="true" class="header-anchor">#</a> .travis.yml 수정</h3> <blockquote><p><code>.travis.yml</code></p> <div class="language- extra-class"><pre class="language-text"><code>language: java
+jdk:
+ - openjdk8
+
+branches:
+ only:
+   - master
+
+# Travis CI 서버의 Home
+cache:
+ directories:
+   - '$HOME/.m2/repository'
+   - '$HOME/.gradle'
+
+before_install:
+ - chmod +x gradlew
+
+script: &quot;./gradlew clean build&quot;
+
+before_deploy:
+ - mkdir -p before-deploy
+ - cp scripts/*.sh before-deploy/
+ - cp appspec.yml before-deploy/
+ - cp build/libs/*.jar before-deploy/
+ - cd before-deploy &amp;&amp; zip -r before-deploy *
+ - cd ../ &amp;&amp; mkdir -p deploy
+ - mv before-deploy/before-deploy.zip deploy/springboot-webservice.zip
+
+deploy:
+ - provider: s3
+   access_key_id: $AWS_ACCESS_KEY
+   secret_access_key: $AWS_SECRET_KEY
+
+   bucket: swchoi-springboot-build
+   region: ap-northeast-2
+   skip_cleanup: true
+   acl: private
+   local_dir: deploy
+   wait-until-deployed : true
+
+ - provider: codedeploy
+   access_key_id: $AWS_ACCESS_KEY
+   secret_access_key: $AWS_SECRET_KEY
+   bucket: swchoi-springboot-build
+   key : springboot-webservice.zip
+   bundle_type : zip
+   application : springboot-webservice
+   deployment_group : springboot-webservice-group
+   region: ap-northeast-2
+   wait-until-deployed : true
+
+
+# CI 실행 완료 시 메일로 알람
+notifications:
+ email:
+   recipients:
+     - b088081@gmail.com
+</code></pre></div></blockquote> <h3 id="appspec-yml-추가"><a href="#appspec-yml-추가" aria-hidden="true" class="header-anchor">#</a> appspec.yml 추가</h3> <blockquote><p><code>appspec.yml</code></p> <div class="language- extra-class"><pre class="language-text"><code>version: 0.0
+os : linux
+files :
+ - source : /
+   destination: /home/ec2-user/app/step2/zip/
+   overwrite : yes
+
+permissions:
+  - object: /
+    pattern: &quot;**&quot;
+    owner: ec2-user
+    group: ec2-user
+
+hooks:
+ ApplicationStart:
+   - location : deploy.sh
+     timeout: 60
+     runas: ec2-user
+</code></pre></div></blockquote> <h4 id="코드설명-5"><a href="#코드설명-5" aria-hidden="true" class="header-anchor">#</a> 코드설명</h4> <ol><li><strong>permissions</strong> <ul><li>CodeDeploy에서 EC2 서버로 넘겨준 파일들을 모두 ec2-user 권한을 갖도록 한다.</li></ul></li> <li><strong>hooks</strong> <ul><li>CodeDeploy 배포 단계에서 실행할 명령어를 지정합니다.</li> <li>ApplicationStart라는 단계에서 deploy.sh를 ec2-user 권한으로 실행하게 합니다.</li> <li>timeout: 시간제한, 60초로 설정(무한정 기다릴 수 없다)</li></ul></li></ol> <h3 id="codedeploy-로그-확인"><a href="#codedeploy-로그-확인" aria-hidden="true" class="header-anchor">#</a> CodeDeploy 로그 확인</h3> <div class="language- extra-class"><pre class="language-text"><code>cd /opt/codedeploy-agent/deploayment-root/
+ll
+drwxr-xr-x 2 root root 4096 Mar 26 22:47 deployment-instructions
+drwxr-xr-x 2 root root 4096 Mar 26 21:44 deployment-logs
+drwxr-xr-x 7 root root 4096 Mar 26 22:47 fde8b9de-07b8-48e2-ad25-aa46d16aad78
+drwxr-xr-x 2 root root 4096 Mar 26 22:47 ongoing-deployment
+</code></pre></div><ol><li>/opt/codedeploy-agent/deploayment-root/deployment-logs/codedeploy-agent-deployments.log
+<ul><li>CodeDeply 로그 파일입니다.</li></ul></li></ol></div> <div class="page-edit"><div class="edit-link"><a href="https://github.com/ChoiSeungWon/about-me/edit/master/docs/spring/chater09/README.md" target="_blank" rel="noopener noreferrer">Edit this page</a> <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></div> <div class="last-updated"><span class="prefix">Last Updated: </span> <span class="time">3/26/2020, 10:54:31 PM</span></div></div> <div class="page-nav"><p class="inner"><span class="prev">
+        ←
+        <a href="/about-me/spring/chater08/" class="prev">
+          EC2 서버에 스프링부트 배포
+        </a></span> <span class="next"><a href="/about-me/spring/chater10/">
+          NGINX 무중단 배포
+        </a>
+        →
+      </span></p></div> </div> <!----></div></div>
+    <script src="/about-me/assets/js/app.1fd5ee7f.js" defer></script><script src="/about-me/assets/js/2.6be79372.js" defer></script>
+  </body>
+</html>
